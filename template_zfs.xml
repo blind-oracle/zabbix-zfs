@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-01-30T19:14:42Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template_ZFS</template>
+            <name>Template_ZFS</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>ZFS - ARC - L1</name>
+                </application>
+                <application>
+                    <name>ZFS - ARC - L2</name>
+                </application>
+                <application>
+                    <name>ZFS - Datasets</name>
+                </application>
+                <application>
+                    <name>ZFS - Devices</name>
+                </application>
+                <application>
+                    <name>ZFS - Global</name>
+                </application>
+                <application>
+                    <name>ZFS - Raw</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>ZFS JSON</name>
+                    <key>zfs</key>
+                    <history>0</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>ZFS - Raw</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>ARC - L1 - Free</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l1.free</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L1</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l1.free</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L1 - Free Percent</name>
+                    <type>CALCULATED</type>
+                    <key>zfs.arc.l1.free_pct</key>
+                    <history>30d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <params>last(&quot;zfs.arc.l1.free&quot;) / last(&quot;zfs.arc.l1.size&quot;) * 100</params>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L1</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>ARC - L1 - Hit Rate</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l1.hitrate</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L1</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l1.hitrate</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L1 - Size</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l1.size</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L1</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l1.size</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L2 - Bytes Read / sec</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l2.bytes_read</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L2</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l2.bytes_read</params>
+                        </step>
+                        <step>
+                            <type>CHANGE_PER_SECOND</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L2 - Bytes Written / sec</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l2.bytes_written</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L2</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l2.bytes_written</params>
+                        </step>
+                        <step>
+                            <type>CHANGE_PER_SECOND</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L2 - Checksum Errors</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l2.cksum_bad</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L2</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l2.cksum_bad</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;{$ZFS_VDEV_ERROR_THRESHOLD}</expression>
+                            <name>ZFS - L2ARC too many checksum errors ({ITEM.LASTVALUE})</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>ARC - L2 - Hit Rate</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l2.hitrate</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L2</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l2.hitrate</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L2 - IO Errors</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l2.io_error</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L2</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l2.io_error</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&gt;{$ZFS_VDEV_ERROR_THRESHOLD}</expression>
+                            <name>ZFS - L2ARC too many IO errors ({ITEM.LASTVALUE})</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>ARC - L2 - Usage</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l2.usage</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L2</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l2.usage</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L2 - Usage Actual</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l2.usage_actual</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L2</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l2.usage_actual</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ZFS - SLAB Size</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.slab.size</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - Global</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.slab</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Dataset discovery</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.discovery.dataset</key>
+                    <delay>0</delay>
+                    <filter>
+                        <evaltype>AND</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#DS_NAME}</macro>
+                                <value>{$ZFS_DS_INCLUDE}</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#DS_NAME}</macro>
+                                <value>{$ZFS_DS_EXCLUDE}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Dataset &quot;{#DS_NAME}&quot; - Available</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.ds.avail[&quot;{#DS_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Datasets</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.datasets['{#DS_NAME}'].avail</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Dataset &quot;{#DS_NAME}&quot; - Compression Ratio</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.ds.compress[&quot;{#DS_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <value_type>FLOAT</value_type>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Datasets</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.datasets['{#DS_NAME}'].compress</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Dataset &quot;{#DS_NAME}&quot; - Referenced</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.ds.referenced[&quot;{#DS_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Datasets</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.datasets['{#DS_NAME}'].referenced</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Dataset &quot;{#DS_NAME}&quot; - Used</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.ds.used[&quot;{#DS_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Datasets</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.datasets['{#DS_NAME}'].used</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Dataset &quot;{#DS_NAME}&quot; - Used Percent</name>
+                            <type>CALCULATED</type>
+                            <key>zfs.ds.used_pct[&quot;{#DS_NAME}&quot;]</key>
+                            <history>30d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <params>last(&quot;zfs.ds.used[\&quot;{#DS_NAME}\&quot;]&quot;) / (last(&quot;zfs.ds.used[\&quot;{#DS_NAME}\&quot;]&quot;) + last(&quot;zfs.ds.avail[\&quot;{#DS_NAME}\&quot;]&quot;)) * 100</params>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Datasets</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{min(600)}&gt;{$ZFS_DS_USAGE_CRIT}</expression>
+                                    <name>Dataset &quot;{#DS_NAME}&quot; usage is critical ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{min(600)}&gt;{$ZFS_DS_USAGE_HIGH}</expression>
+                                    <name>Dataset &quot;{#DS_NAME}&quot; usage is high ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#DS_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.datasets.*</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Device discovery</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.discovery.device</key>
+                    <delay>0</delay>
+                    <filter>
+                        <evaltype>AND</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#DEV_NAME}</macro>
+                                <value>{$ZFS_VDEV_INCLUDE}</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#DEV_NAME}</macro>
+                                <value>{$ZFS_VDEV_EXCLUDE}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Allocated</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.alloc[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].alloc</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Errors - Checksum</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.errors.cksum[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].errors.cksum</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{$ZFS_VDEV_ERROR_THRESHOLD}</expression>
+                                    <name>Device &quot;{#DEV_NAME}&quot; has too many checksum errors ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Errors - Read</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.errors.read[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].errors.read</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{$ZFS_VDEV_ERROR_THRESHOLD}</expression>
+                                    <name>Device &quot;{#DEV_NAME}&quot; has too many read errors ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Errors - Write</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.errors.write[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].errors.write</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{$ZFS_VDEV_ERROR_THRESHOLD}</expression>
+                                    <name>Device &quot;{#DEV_NAME}&quot; has too many write errors ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Fragmentation</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.frag[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].frag</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Free</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.free[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].free</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Online</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.online[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>YesNo</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].online</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Device &quot;{#DEV_NAME}&quot; is not ONLINE</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Size</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.size[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].size</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Device &quot;{#DEV_NAME}&quot; - Usage</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.device.usage[&quot;{#DEV_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>ZFS - Devices</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.vdevs['{#DEV_NAME}'].usage</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#DEV_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.vdevs.*</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Pool discovery</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.discovery.pool</key>
+                    <delay>0</delay>
+                    <filter>
+                        <evaltype>AND</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#POOL_NAME}</macro>
+                                <value>{$ZFS_POOL_INCLUDE}</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#POOL_NAME}</macro>
+                                <value>{$ZFS_POOL_EXCLUDE}</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Allocated</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.alloc[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].alloc</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Deduplication Ratio</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.dedup[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <value_type>FLOAT</value_type>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].dedup</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Fragmentation</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.frag[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>%</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].frag</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{min(600)}&gt;{$ZFS_POOL_FRAG_HIGH}</expression>
+                                    <name>Pool &quot;{#POOL_NAME}&quot; is too fragmented ({ITEM.LASTVALUE})</name>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Free</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.free[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].free</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Online</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.online[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <valuemap>
+                                <name>YesNo</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].online</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Pool &quot;{#POOL_NAME}&quot; is not ONLINE</name>
+                                    <priority>DISASTER</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Scrub</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.scrub[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <valuemap>
+                                <name>YesNo</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].scrub</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{min(600)}&gt;0</expression>
+                                    <name>Pool &quot;{#POOL_NAME}&quot; is being scrubbed</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Size</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.size[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].size</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Usage</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.usage[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>%</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].usage</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{min(600)}&gt;={$ZFS_POOL_USAGE_CRIT}</expression>
+                                    <name>Pool &quot;{#POOL_NAME}&quot; usage is critical({ITEM.LASTVALUE})</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{min(600)}&gt;={$ZFS_POOL_USAGE_HIGH}</expression>
+                                    <name>Pool &quot;{#POOL_NAME}&quot; usage is high ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#POOL_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.pools.*</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$ZFS_DS_EXCLUDE}</macro>
+                    <value>^FOOBARBAZ$</value>
+                    <description>Regexp to exclude the datasets during discovery</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_DS_INCLUDE}</macro>
+                    <value>.*</value>
+                    <description>Regexp to include the datasets during discovery</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_DS_USAGE_CRIT}</macro>
+                    <value>95</value>
+                    <description>Dataset usage in % when crit alert is triggered</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_DS_USAGE_HIGH}</macro>
+                    <value>85</value>
+                    <description>Dataset usage in % when high alert is triggered</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_POOL_EXCLUDE}</macro>
+                    <value>^FOOBARBAZ$</value>
+                    <description>Regexp to exclude the pools during discovery</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_POOL_FRAG_HIGH}</macro>
+                    <value>40</value>
+                    <description>Pool fragmentation in % when high alert is triggered</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_POOL_INCLUDE}</macro>
+                    <value>.*</value>
+                    <description>Regexp to include the pools during discovery</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_POOL_USAGE_CRIT}</macro>
+                    <value>95</value>
+                    <description>Pool usage in % when crit alert is triggered</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_POOL_USAGE_HIGH}</macro>
+                    <value>85</value>
+                    <description>Pool usage in % when high alert is triggered</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_VDEV_ERROR_THRESHOLD}</macro>
+                    <value>0</value>
+                    <description>vdev and L2ARC error threshold when triggers fire</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_VDEV_EXCLUDE}</macro>
+                    <value>^FOOBARBAZ$</value>
+                    <description>Regexp to exclude the vdevs during discovery</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_VDEV_INCLUDE}</macro>
+                    <value>.*</value>
+                    <description>Regexp to include the vdevs during discovery</description>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>YesNo</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>No</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Yes</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
