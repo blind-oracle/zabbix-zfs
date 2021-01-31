@@ -80,17 +80,19 @@ All items are defined as `Dependent` and extract relevant data using JSONPath qu
   - Pools
   - Datasets
   - Devices
+  - L2ARC - items will be created only if it's present
 - Items:
   - Pools: health, disk usage, fragmentation, deduplication, scrub
   - Datasets: disk usage, compression ratio
   - Devices: health, disk usage, error counts, fragmentation
   - SLAB usage
   - L1 & L2 ARC stats
-- A number of triggers:
+- Triggers:
   - Pool & device health
   - Pool & dataset disk usage
   - High fragmentation
-  - L2ARC errors
+  - ARC usage
+  - L2ARC errors & low hit rate
   - Scrub
 - Zabbix agent passive checks. Can be converted to active if needed.
 
@@ -108,6 +110,9 @@ All items are defined as `Dependent` and extract relevant data using JSONPath qu
 - `{$ZFS_VDEV_ERROR_THRESHOLD}` - vdev and L2ARC error threshold when triggers fire
 - `{$ZFS_VDEV_EXCLUDE}` - Regexp to exclude the vdevs during discovery
 - `{$ZFS_VDEV_INCLUDE}` - Regexp to include the vdevs during discovery
+- `{$ZFS_ARC_META_THRESHOLD}` - Alert when ARC meta usage % goes over this value
+- `{$ZFS_L2ARC_ERROR_THRESHOLD}` - Error threshold for L2ARC errors
+- `{$ZFS_L2ARC_HITRATE_THRESHOLD}` - Alert when L2ARC hit rate falls below this value
 
 ## Requirements
 

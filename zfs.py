@@ -20,6 +20,21 @@ def run(cmd, split=r'\t'):
     return [re.split(split, x.strip()) for x in r.split('\n') if x.strip()]
 
 
+# Read & santize file splitting by given regexp
+def read_file(fn, skip=2, split=r'\s+'):
+    with open(fn) as f:
+        for i in range(skip):
+            f.readline()
+
+        return [re.split(split, x) for x in f.readlines()]
+
+
+# Read IO stats for a given pool
+def pool_io_stats(pool):
+    r = read_file(f'/proc/spl/kstat/zfs/{pool}/io', skip=1)
+    return {x[0]: int(x[1]) for x in zip(r[0], r[1]) if x[1].isdigit()}
+
+
 # Returns a list of pools with their stats
 def pool_list(scrub):
     r = run([
@@ -38,7 +53,8 @@ def pool_list(scrub):
         'usage': int(x[5]),
         'dedup': float(x[6]),
         'scrub': int(scrub[x[0]]),
-        'online': int(x[7] == 'ONLINE')
+        'online': int(x[7] == 'ONLINE'),
+        'io': pool_io_stats(x[0]),
     } for x in r}
 
 
@@ -105,25 +121,12 @@ def zfs_list():
 
 
 def slab_usage():
-    with open('/proc/spl/kmem/slab') as f:
-        f.readline()
-        f.readline()
-
-        return sum([int(x[2]) for x in (re.split(r'\s+', x)
-                                        for x in f.readlines()) if x[2].isdigit()])
-
-
-def arc_stats_read():
-    with open('/proc/spl/kstat/zfs/arcstats') as f:
-        f.readline()
-        f.readline()
-
-        return {x[0]: int(x[2]) for x in (re.split(r'\s+', x)
-                                          for x in f.readlines())}
+    return sum([int(x[2])
+                for x in read_file('/proc/spl/kmem/slab') if x[2].isdigit()])
 
 
 def arc_stats():
-    r = arc_stats_read()
+    r = {x[0]: int(x[2]) for x in read_file('/proc/spl/kstat/zfs/arcstats')}
 
     l1 = r['hits'] + r['misses']
     l2 = r['l2_hits'] + r['l2_misses']
@@ -133,6 +136,8 @@ def arc_stats():
             'size': r['size'],
             'hitrate': r['hits'] / l1 * 100 if l1 else 0,
             'free': r['memory_available_bytes'],
+            'meta_used': r['arc_meta_used'],
+            'meta_limit': r['arc_meta_limit'],
         },
 
         'l2': {

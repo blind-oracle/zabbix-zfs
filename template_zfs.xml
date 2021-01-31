@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-01-30T19:14:42Z</date>
+    <date>2021-01-31T15:43:39Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -19,9 +19,6 @@
             <applications>
                 <application>
                     <name>ZFS - ARC - L1</name>
-                </application>
-                <application>
-                    <name>ZFS - ARC - L2</name>
                 </application>
                 <application>
                     <name>ZFS - Datasets</name>
@@ -109,6 +106,71 @@
                     </master_item>
                 </item>
                 <item>
+                    <name>ARC - L1 - Meta Limit</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l1.meta_limit</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L1</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l1.meta_limit</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L1 - Meta Used</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.arc.l1.meta_used</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L1</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.arc.l1.meta_used</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>ARC - L1 - Meta Used Percent</name>
+                    <type>CALCULATED</type>
+                    <key>zfs.arc.l1.meta_used_pct</key>
+                    <history>30d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <params>last(&quot;zfs.arc.l1.meta_used&quot;) / last(&quot;zfs.arc.l1.meta_limit&quot;) * 100</params>
+                    <applications>
+                        <application>
+                            <name>ZFS - ARC - L1</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{min(600)}&gt;{$ZFS_ARC_META_THRESHOLD}</expression>
+                            <name>ZFS - ARC meta usage too high ({ITEM.LASTVALUE})</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
                     <name>ARC - L1 - Size</name>
                     <type>DEPENDENT</type>
                     <key>zfs.arc.l1.size</key>
@@ -124,181 +186,6 @@
                         <step>
                             <type>JSONPATH</type>
                             <params>$.arc.l1.size</params>
-                        </step>
-                    </preprocessing>
-                    <master_item>
-                        <key>zfs</key>
-                    </master_item>
-                </item>
-                <item>
-                    <name>ARC - L2 - Bytes Read / sec</name>
-                    <type>DEPENDENT</type>
-                    <key>zfs.arc.l2.bytes_read</key>
-                    <delay>0</delay>
-                    <history>30d</history>
-                    <units>B</units>
-                    <applications>
-                        <application>
-                            <name>ZFS - ARC - L2</name>
-                        </application>
-                    </applications>
-                    <preprocessing>
-                        <step>
-                            <type>JSONPATH</type>
-                            <params>$.arc.l2.bytes_read</params>
-                        </step>
-                        <step>
-                            <type>CHANGE_PER_SECOND</type>
-                            <params/>
-                        </step>
-                    </preprocessing>
-                    <master_item>
-                        <key>zfs</key>
-                    </master_item>
-                </item>
-                <item>
-                    <name>ARC - L2 - Bytes Written / sec</name>
-                    <type>DEPENDENT</type>
-                    <key>zfs.arc.l2.bytes_written</key>
-                    <delay>0</delay>
-                    <history>30d</history>
-                    <units>B</units>
-                    <applications>
-                        <application>
-                            <name>ZFS - ARC - L2</name>
-                        </application>
-                    </applications>
-                    <preprocessing>
-                        <step>
-                            <type>JSONPATH</type>
-                            <params>$.arc.l2.bytes_written</params>
-                        </step>
-                        <step>
-                            <type>CHANGE_PER_SECOND</type>
-                            <params/>
-                        </step>
-                    </preprocessing>
-                    <master_item>
-                        <key>zfs</key>
-                    </master_item>
-                </item>
-                <item>
-                    <name>ARC - L2 - Checksum Errors</name>
-                    <type>DEPENDENT</type>
-                    <key>zfs.arc.l2.cksum_bad</key>
-                    <delay>0</delay>
-                    <history>30d</history>
-                    <applications>
-                        <application>
-                            <name>ZFS - ARC - L2</name>
-                        </application>
-                    </applications>
-                    <preprocessing>
-                        <step>
-                            <type>JSONPATH</type>
-                            <params>$.arc.l2.cksum_bad</params>
-                        </step>
-                    </preprocessing>
-                    <master_item>
-                        <key>zfs</key>
-                    </master_item>
-                    <triggers>
-                        <trigger>
-                            <expression>{last()}&gt;{$ZFS_VDEV_ERROR_THRESHOLD}</expression>
-                            <name>ZFS - L2ARC too many checksum errors ({ITEM.LASTVALUE})</name>
-                            <priority>AVERAGE</priority>
-                        </trigger>
-                    </triggers>
-                </item>
-                <item>
-                    <name>ARC - L2 - Hit Rate</name>
-                    <type>DEPENDENT</type>
-                    <key>zfs.arc.l2.hitrate</key>
-                    <delay>0</delay>
-                    <history>30d</history>
-                    <value_type>FLOAT</value_type>
-                    <units>%</units>
-                    <applications>
-                        <application>
-                            <name>ZFS - ARC - L2</name>
-                        </application>
-                    </applications>
-                    <preprocessing>
-                        <step>
-                            <type>JSONPATH</type>
-                            <params>$.arc.l2.hitrate</params>
-                        </step>
-                    </preprocessing>
-                    <master_item>
-                        <key>zfs</key>
-                    </master_item>
-                </item>
-                <item>
-                    <name>ARC - L2 - IO Errors</name>
-                    <type>DEPENDENT</type>
-                    <key>zfs.arc.l2.io_error</key>
-                    <delay>0</delay>
-                    <history>30d</history>
-                    <applications>
-                        <application>
-                            <name>ZFS - ARC - L2</name>
-                        </application>
-                    </applications>
-                    <preprocessing>
-                        <step>
-                            <type>JSONPATH</type>
-                            <params>$.arc.l2.io_error</params>
-                        </step>
-                    </preprocessing>
-                    <master_item>
-                        <key>zfs</key>
-                    </master_item>
-                    <triggers>
-                        <trigger>
-                            <expression>{last()}&gt;{$ZFS_VDEV_ERROR_THRESHOLD}</expression>
-                            <name>ZFS - L2ARC too many IO errors ({ITEM.LASTVALUE})</name>
-                            <priority>AVERAGE</priority>
-                        </trigger>
-                    </triggers>
-                </item>
-                <item>
-                    <name>ARC - L2 - Usage</name>
-                    <type>DEPENDENT</type>
-                    <key>zfs.arc.l2.usage</key>
-                    <delay>0</delay>
-                    <history>30d</history>
-                    <units>B</units>
-                    <applications>
-                        <application>
-                            <name>ZFS - ARC - L2</name>
-                        </application>
-                    </applications>
-                    <preprocessing>
-                        <step>
-                            <type>JSONPATH</type>
-                            <params>$.arc.l2.usage</params>
-                        </step>
-                    </preprocessing>
-                    <master_item>
-                        <key>zfs</key>
-                    </master_item>
-                </item>
-                <item>
-                    <name>ARC - L2 - Usage Actual</name>
-                    <type>DEPENDENT</type>
-                    <key>zfs.arc.l2.usage_actual</key>
-                    <delay>0</delay>
-                    <history>30d</history>
-                    <units>B</units>
-                    <applications>
-                        <application>
-                            <name>ZFS - ARC - L2</name>
-                        </application>
-                    </applications>
-                    <preprocessing>
-                        <step>
-                            <type>JSONPATH</type>
-                            <params>$.arc.l2.usage_actual</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -749,6 +636,211 @@
                     </preprocessing>
                 </discovery_rule>
                 <discovery_rule>
+                    <name>L2ARC Discovery</name>
+                    <type>DEPENDENT</type>
+                    <key>zfs.discovery.l2arc</key>
+                    <delay>0</delay>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>ARC - L2 - Bytes Read / sec</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.arc.l2.bytes_read[{#L2ARC}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - ARC - L2</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.arc.l2.bytes_read</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ARC - L2 - Bytes Written / sec</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.arc.l2.bytes_written[{#L2ARC}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - ARC - L2</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.arc.l2.bytes_written</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ARC - L2 - Checksum Errors</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.arc.l2.cksum_bad[{#L2ARC}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - ARC - L2</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.arc.l2.cksum_bad</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{$ZFS_L2ARC_ERROR_THRESHOLD}</expression>
+                                    <name>ZFS - L2ARC too many checksum errors ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ARC - L2 - Hit Rate</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.arc.l2.hitrate[{#L2ARC}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - ARC - L2</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.arc.l2.hitrate</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{max(600)}&lt;{$ZFS_L2ARC_HITRATE_THRESHOLD}</expression>
+                                    <name>ZFS - L2ARC hit rate too low ({ITEM.LASTVALUE})</name>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ARC - L2 - IO Errors</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.arc.l2.io_error[{#L2ARC}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - ARC - L2</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.arc.l2.io_error</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{$ZFS_L2ARC_ERROR_THRESHOLD}</expression>
+                                    <name>ZFS - L2ARC too many IO errors ({ITEM.LASTVALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ARC - L2 - Usage</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.arc.l2.usage[{#L2ARC}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - ARC - L2</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.arc.l2.usage</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ARC - L2 - Usage Actual</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.arc.l2.usage_actual[{#L2ARC}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - ARC - L2</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.arc.l2.usage_actual</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>zfs</key>
+                    </master_item>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>var r = [];
+
+if (JSON.parse(value).arc.l2.usage &gt; 0)
+  r = [{'{#L2ARC}': '0'}];
+
+return JSON.stringify(r);</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
                     <name>Pool discovery</name>
                     <type>DEPENDENT</type>
                     <key>zfs.discovery.pool</key>
@@ -860,6 +952,108 @@
                                 <step>
                                     <type>JSONPATH</type>
                                     <params>$.pools['{#POOL_NAME}'].free</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - IO - Bytes Read / sec</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.io.nread[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].io.nread</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - IO - Bytes Written / sec</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.io.nwritten[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B</units>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].io.nwritten</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - IO - Read Requests / sec</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.io.reads[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].io.reads</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - IO - Write Requests / sec</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.io.writes[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].io.writes</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
                                 </step>
                             </preprocessing>
                             <master_item>
@@ -1004,6 +1198,11 @@
             </discovery_rules>
             <macros>
                 <macro>
+                    <macro>{$ZFS_ARC_META_THRESHOLD}</macro>
+                    <value>90</value>
+                    <description>Alert when ARC meta usage % goes over this value</description>
+                </macro>
+                <macro>
                     <macro>{$ZFS_DS_EXCLUDE}</macro>
                     <value>^FOOBARBAZ$</value>
                     <description>Regexp to exclude the datasets during discovery</description>
@@ -1022,6 +1221,16 @@
                     <macro>{$ZFS_DS_USAGE_HIGH}</macro>
                     <value>85</value>
                     <description>Dataset usage in % when high alert is triggered</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_L2ARC_ERROR_THRESHOLD}</macro>
+                    <value>0</value>
+                    <description>Error threshold for L2ARC errors</description>
+                </macro>
+                <macro>
+                    <macro>{$ZFS_L2ARC_HITRATE_THRESHOLD}</macro>
+                    <value>30</value>
+                    <description>Alert when L2ARC hit rate falls below this value</description>
                 </macro>
                 <macro>
                     <macro>{$ZFS_POOL_EXCLUDE}</macro>
