@@ -31,7 +31,11 @@ def read_file(fn, skip=2, split=r'\s+'):
 
 # Read IO stats for a given pool
 def pool_io_stats(pool):
-    r = read_file(f'/proc/spl/kstat/zfs/{pool}/io', skip=1)
+    try:
+        r = read_file(f'/proc/spl/kstat/zfs/{pool}/iostats', skip=1)
+    except:
+        r = read_file(f'/proc/spl/kstat/zfs/{pool}/io', skip=1)
+
     return {x[0]: int(x[1]) for x in zip(r[0], r[1]) if x[1].isdigit()}
 
 
@@ -75,11 +79,19 @@ def pool_status():
         if l[0] == "scan:" and ' '.join(l[1:4]) == "scrub in progress":
             scrub[pool] = True
 
-    vdev_errors = {x[0]: {
-        'read': int(x[2]),
-        'write': int(x[3]),
-        'cksum': int(x[4]),
-    } for x in r if len(x) == 5 and x[0].startswith('/')}
+    vdev_errors = {}
+    for x in r:
+        if len(x) != 5 or not x[0].startswith('/'):
+            continue
+
+        try:
+            vdev_errors[x[0]] = {
+                'read': int(x[2]),
+                'write': int(x[3]),
+                'cksum': int(x[4]),
+            }
+        except:
+            pass
 
     return scrub, vdev_errors
 
