@@ -33,7 +33,7 @@ def read_file(fn, skip=2, split=r'\s+'):
 def pool_io_stats(pool):
     try:
         r = read_file(f'/proc/spl/kstat/zfs/{pool}/iostats', skip=1)
-    except:
+    except BaseException:
         r = read_file(f'/proc/spl/kstat/zfs/{pool}/io', skip=1)
 
     return {x[0]: int(x[1]) for x in zip(r[0], r[1]) if x[1].isdigit()}
@@ -90,8 +90,12 @@ def pool_status():
                 'write': int(x[3]),
                 'cksum': int(x[4]),
             }
-        except:
-            pass
+        except BaseException:
+            vdev_errors[x[0]] = {
+                'read': 0,
+                'write': 0,
+                'cksum': 0,
+            }
 
     return scrub, vdev_errors
 
