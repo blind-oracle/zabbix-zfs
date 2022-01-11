@@ -81,7 +81,7 @@ def pool_status():
 
     vdev_errors = {}
     for x in r:
-        if len(x) < 5 or not x[0].startswith('/'):
+        if len(x) < 2 or not x[0].startswith('/'):
             continue
 
         try:
