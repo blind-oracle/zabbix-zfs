@@ -114,7 +114,7 @@ def vdev_list(errors):
         'free': int(x[3]) if x[3].isdigit() else 0,
         'frag': int(x[6]) if x[6].isdigit() else 0,
         'usage': int(x[7]) if x[7].isdigit() else 0,
-        'online': int(x[9] == 'ONLINE'),
+        'online': int(x[9] == 'ONLINE' or x[9] == 'AVAIL'),
         'errors': errors[x[0]],
     } for x in r if x[0].startswith('/')}
 
