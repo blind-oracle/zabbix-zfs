@@ -1096,6 +1096,12 @@ return JSON.stringify(r);</params>
                                     <name>Pool &quot;{#POOL_NAME}&quot; is OFFLINE</name>
                                     <priority>DISASTER</priority>
                                 </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;1 or {last()}&gt;3</expression>
+                                    <name>Pool &quot;{#POOL_NAME}&quot; online state is UNKNOWN</name>
+                                    <priority>WARNING</priority>
+                                    <description>State ID is out of range (1-3). -> Check your information gather script.</description>
+                                </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
