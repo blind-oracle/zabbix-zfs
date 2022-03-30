@@ -19,6 +19,17 @@ def run(cmd, split=r'\t'):
 
     return [re.split(split, x.strip()) for x in r.split('\n') if x.strip()]
 
+# convert string states to integer
+def state2int(state_str):
+    if state_str == 'ONLINE' or state_str == 'AVAIL' or state_str == 'INUSE':
+        r = 1  # all perfect
+    elif state_str == 'DEGRADED':
+        r = 2  # slowed down
+    elif state_str == 'FAULTED' or state_str == 'UNAVAIL' or state_str == 'REMOVED' or state_str == 'OFFLINE':
+        r = 3  # critical state
+    else:
+        r = 0  # unknown state
+    return int(r)
 
 # Read & santize file splitting by given regexp
 def read_file(fn, skip=2, split=r'\s+'):
@@ -57,7 +68,7 @@ def pool_list(scrub):
         'usage': int(x[5]),
         'dedup': float(x[6]),
         'scrub': int(scrub[x[0]]),
-        'online': int(x[7] == 'ONLINE'),
+        'online': state2int(x[7]),
         'io': pool_io_stats(x[0]),
     } for x in r}
 
@@ -114,7 +125,7 @@ def vdev_list(errors):
         'free': int(x[3]) if x[3].isdigit() else 0,
         'frag': int(x[6]) if x[6].isdigit() else 0,
         'usage': int(x[7]) if x[7].isdigit() else 0,
-        'online': int(x[9] == 'ONLINE'),
+        'online': state2int(x[9]),
         'errors': errors[x[0]],
     } for x in r if x[0].startswith('/')}
 
