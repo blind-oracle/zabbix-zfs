@@ -119,7 +119,7 @@ All items are defined as `Dependent` and extract relevant data using JSONPath qu
 ## Requirements
 
 - Tested on OpenZFS 2.x, maybe will work with 0.8.x
-- Tested on Zabbix 5.0, but should work on 4.2+
+- Tested on Zabbix 6.0, but should work on 4.2+
 - Python3
 
 ## Installation
