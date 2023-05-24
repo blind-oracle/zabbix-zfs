@@ -37,6 +37,7 @@ All items are defined as `Dependent` and extract relevant data using JSONPath qu
       "usage": 35,
       "dedup": 1.0,
       "scrub": 0,
+      "resilver": 0,
       "online": 1
     }
   },
@@ -82,7 +83,7 @@ All items are defined as `Dependent` and extract relevant data using JSONPath qu
   - Devices
   - L2ARC - items will be created only if it's present
 - Items:
-  - Pools: health, disk usage, fragmentation, deduplication, scrub
+  - Pools: health, disk usage, fragmentation, deduplication, scrub, resilver
   - Datasets: disk usage, compression ratio
   - Devices: health, disk usage, error counts, fragmentation
   - SLAB usage
@@ -94,6 +95,7 @@ All items are defined as `Dependent` and extract relevant data using JSONPath qu
   - ARC usage
   - L2ARC errors & low hit rate
   - Scrub
+  - Resilver
 - Zabbix agent passive checks. Can be converted to active if needed.
 
 ## Macros

@@ -51,7 +51,7 @@ def pool_io_stats(pool):
 
 
 # Returns a list of pools with their stats
-def pool_list(scrub):
+def pool_list(scrub, resilver):
     r = run([
         ZP,
         "list",
@@ -68,6 +68,7 @@ def pool_list(scrub):
         'usage': int(x[5]),
         'dedup': float(x[6]),
         'scrub': int(scrub[x[0]]),
+        'resilver': int(resilver[x[0]]),
         'online': state2int(x[7]),
         'io': pool_io_stats(x[0]),
     } for x in r}
@@ -82,13 +83,18 @@ def pool_status():
 
     pool = ""
     scrub = {}
+    resilver = {}
     for l in r:
         if l[0] == "pool:":
             pool = l[1]
             scrub[pool] = False
+            resilver[pool] = False
 
-        if l[0] == "scan:" and ' '.join(l[1:4]) == "scrub in progress":
+        elif l[0] == "scan:" and ' '.join(l[1:4]) == "scrub in progress":
             scrub[pool] = True
+
+        elif l[0] == "scan:" and ' '.join(l[1:4]) == "resilver in progress":
+            resilver[pool] = True
 
     vdev_errors = {}
     for x in r:
@@ -108,7 +114,7 @@ def pool_status():
                 'cksum': 0,
             }
 
-    return scrub, vdev_errors
+    return scrub, resilver, vdev_errors
 
 
 def vdev_list(errors):
@@ -179,11 +185,11 @@ def arc_stats():
     }
 
 
-scrub, vdev_errors = pool_status()
+scrub, resilver, vdev_errors = pool_status()
 
 r = {
     'vdevs': vdev_list(vdev_errors),
-    'pools': pool_list(scrub),
+    'pools': pool_list(scrub, resilver),
     'datasets': zfs_list(),
     'arc': arc_stats(),
     'slab': slab_usage(),

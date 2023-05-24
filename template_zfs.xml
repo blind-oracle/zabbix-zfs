@@ -1136,6 +1136,37 @@ return JSON.stringify(r);</params>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
+                            <name>Pool &quot;{#POOL_NAME}&quot; - Resilver</name>
+                            <type>DEPENDENT</type>
+                            <key>zfs.pool.resilver[&quot;{#POOL_NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>ZFS - Pool &quot;{#POOL_NAME}&quot;</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <valuemap>
+                                <name>YesNo</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.pools['{#POOL_NAME}'].resilver</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>zfs</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{min(600)}&gt;0</expression>
+                                    <name>Pool &quot;{#POOL_NAME}&quot; is being resilvered</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
                             <name>Pool &quot;{#POOL_NAME}&quot; - Size</name>
                             <type>DEPENDENT</type>
                             <key>zfs.pool.size[&quot;{#POOL_NAME}&quot;]</key>
