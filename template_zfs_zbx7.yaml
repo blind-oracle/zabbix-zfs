@@ -1,0 +1,748 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 42b9e67dd1a64137a7b1198211ead889
+      template: Template_ZFS
+      name: Template_ZFS
+      groups:
+        - name: Templates
+      items:
+        - uuid: c461d67aefe143c4aa20d54aa24f27e5
+          name: 'ZFS JSON'
+          key: zfs
+          history: '0'
+          trends: '0'
+          value_type: TEXT
+          tags:
+            - tag: Application
+              value: 'ZFS - Raw'
+        - uuid: f91be92226914fecb3d5b5a448457895
+          name: 'ARC - L1 - Free'
+          type: DEPENDENT
+          key: zfs.arc.l1.free
+          delay: '0'
+          history: 30d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l1.free
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L1'
+        - uuid: 7b0b481e63f342e2855a793f5732fe04
+          name: 'ARC - L1 - Free Percent'
+          type: CALCULATED
+          key: zfs.arc.l1.free_pct
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          params: 'last(//zfs.arc.l1.free) / last(//zfs.arc.l1.size) * 100'
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L1'
+        - uuid: 6a1f7c66f1c14f9ebd17c3c5f123b00a
+          name: 'ARC - L1 - Hit Rate'
+          type: DEPENDENT
+          key: zfs.arc.l1.hitrate
+          delay: '0'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l1.hitrate
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L1'
+        - uuid: 2194e431e24d4959b00fc77ad0145a4d
+          name: 'ARC - L1 - Size'
+          type: DEPENDENT
+          key: zfs.arc.l1.size
+          delay: '0'
+          history: 30d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l1.size
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L1'
+        - uuid: c187b37062194cf3999a235b23585cc3
+          name: 'ARC - L2 - Bytes Read / sec'
+          type: DEPENDENT
+          key: zfs.arc.l2.bytes_read
+          delay: '0'
+          history: 30d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l2.bytes_read
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L2'
+        - uuid: 5ac3fd13900d4566bc2db98c6f3517e8
+          name: 'ARC - L2 - Bytes Written / sec'
+          type: DEPENDENT
+          key: zfs.arc.l2.bytes_written
+          delay: '0'
+          history: 30d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l2.bytes_written
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L2'
+        - uuid: efad778142c4486998fa802b9730da4c
+          name: 'ARC - L2 - Checksum Errors'
+          type: DEPENDENT
+          key: zfs.arc.l2.cksum_bad
+          delay: '0'
+          history: 30d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l2.cksum_bad
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L2'
+          triggers:
+            - uuid: ab5241461a884c93919a393f73341bdb
+              expression: 'last(/Template_ZFS/zfs.arc.l2.cksum_bad)>{$ZFS_VDEV_ERROR_THRESHOLD}'
+              name: 'ZFS - L2ARC too many checksum errors ({ITEM.LASTVALUE})'
+              priority: AVERAGE
+        - uuid: b0954fab038943ce8aea79d69bc96c2a
+          name: 'ARC - L2 - Hit Rate'
+          type: DEPENDENT
+          key: zfs.arc.l2.hitrate
+          delay: '0'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l2.hitrate
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L2'
+        - uuid: 6025fc41a548408b8d3feb7ee8dcff67
+          name: 'ARC - L2 - IO Errors'
+          type: DEPENDENT
+          key: zfs.arc.l2.io_error
+          delay: '0'
+          history: 30d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l2.io_error
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L2'
+          triggers:
+            - uuid: c6e9040050ee4789ab7c478a095378c6
+              expression: 'last(/Template_ZFS/zfs.arc.l2.io_error)>{$ZFS_VDEV_ERROR_THRESHOLD}'
+              name: 'ZFS - L2ARC too many IO errors ({ITEM.LASTVALUE})'
+              priority: AVERAGE
+        - uuid: 24cf31b1aa3c4fccac14559f221d5caa
+          name: 'ARC - L2 - Usage'
+          type: DEPENDENT
+          key: zfs.arc.l2.usage
+          delay: '0'
+          history: 30d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l2.usage
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L2'
+        - uuid: 56770a0b5ad647249dfa22f8c736e10c
+          name: 'ARC - L2 - Usage Actual'
+          type: DEPENDENT
+          key: zfs.arc.l2.usage_actual
+          delay: '0'
+          history: 30d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.arc.l2.usage_actual
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - ARC - L2'
+        - uuid: 145ae7daf67648ee9ce0d6aba633869f
+          name: 'ZFS - SLAB Size'
+          type: DEPENDENT
+          key: zfs.slab.size
+          delay: '0'
+          history: 30d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.slab
+          master_item:
+            key: zfs
+          tags:
+            - tag: Application
+              value: 'ZFS - Global'
+      discovery_rules:
+        - uuid: a9752b1851334464b249acf1d09bbf6f
+          name: 'Dataset discovery'
+          type: DEPENDENT
+          key: zfs.discovery.dataset
+          delay: '0'
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#DS_NAME}'
+                value: '{$ZFS_DS_INCLUDE}'
+                formulaid: A
+              - macro: '{#DS_NAME}'
+                value: '{$ZFS_DS_EXCLUDE}'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
+          lifetime: 7d
+          item_prototypes:
+            - uuid: 074b215673984cbbb441bbbf45228585
+              name: 'Dataset "{#DS_NAME}" - Available'
+              type: DEPENDENT
+              key: 'zfs.ds.avail["{#DS_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.datasets[''{#DS_NAME}''].avail'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Datasets'
+            - uuid: 1765131f2c8642228658a8632a0bfa3e
+              name: 'Dataset "{#DS_NAME}" - Compression Ratio'
+              type: DEPENDENT
+              key: 'zfs.ds.compress["{#DS_NAME}"]'
+              delay: '0'
+              history: 30d
+              value_type: FLOAT
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.datasets[''{#DS_NAME}''].compress'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Datasets'
+            - uuid: bcbf6c5a2f984f42ae4e4624fb3f2dbb
+              name: 'Dataset "{#DS_NAME}" - Referenced'
+              type: DEPENDENT
+              key: 'zfs.ds.referenced["{#DS_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.datasets[''{#DS_NAME}''].referenced'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Datasets'
+            - uuid: 17fb4c84d470489c826646fb21a931a0
+              name: 'Dataset "{#DS_NAME}" - Used'
+              type: DEPENDENT
+              key: 'zfs.ds.used["{#DS_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.datasets[''{#DS_NAME}''].used'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Datasets'
+            - uuid: 323fc976a82b46a08cbf55152c736f8d
+              name: 'Dataset "{#DS_NAME}" - Used Percent'
+              type: CALCULATED
+              key: 'zfs.ds.used_pct["{#DS_NAME}"]'
+              history: 30d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//zfs.ds.used["{#DS_NAME}"]) / (last(//zfs.ds.used["{#DS_NAME}"]) + last(//zfs.ds.avail["{#DS_NAME}"])) * 100'
+              tags:
+                - tag: Application
+                  value: 'ZFS - Datasets'
+              trigger_prototypes:
+                - uuid: b26a19ef046b44b583399c8bb08abea6
+                  expression: 'min(/Template_ZFS/zfs.ds.used_pct["{#DS_NAME}"],600s)>{$ZFS_DS_USAGE_CRIT}'
+                  name: 'Dataset "{#DS_NAME}" usage is critical ({ITEM.LASTVALUE})'
+                  priority: AVERAGE
+                - uuid: 522dfe4ac7644ff2a2bc58f0fd1597ae
+                  expression: 'min(/Template_ZFS/zfs.ds.used_pct["{#DS_NAME}"],600s)>{$ZFS_DS_USAGE_HIGH}'
+                  name: 'Dataset "{#DS_NAME}" usage is high ({ITEM.LASTVALUE})'
+                  priority: AVERAGE
+          master_item:
+            key: zfs
+          lld_macro_paths:
+            - lld_macro: '{#DS_NAME}'
+              path: $.name
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.datasets.*'
+        - uuid: e9ee9540fe5c45b6bd0b0aa07a1c5473
+          name: 'Device discovery'
+          type: DEPENDENT
+          key: zfs.discovery.device
+          delay: '0'
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#DEV_NAME}'
+                value: '{$ZFS_VDEV_INCLUDE}'
+                formulaid: A
+              - macro: '{#DEV_NAME}'
+                value: '{$ZFS_VDEV_EXCLUDE}'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
+          lifetime: 7d
+          item_prototypes:
+            - uuid: 5fb864c645064c549a292e03fce2cbdc
+              name: 'Device "{#DEV_NAME}" - Allocated'
+              type: DEPENDENT
+              key: 'zfs.device.alloc["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].alloc'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+            - uuid: 8953094e9aea4f5fb557a34be4a2b97e
+              name: 'Device "{#DEV_NAME}" - Errors - Checksum'
+              type: DEPENDENT
+              key: 'zfs.device.errors.cksum["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].errors.cksum'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+              trigger_prototypes:
+                - uuid: 47af76c14d5c4ad58ece5db3bdbcbcc4
+                  expression: 'last(/Template_ZFS/zfs.device.errors.cksum["{#DEV_NAME}"])>{$ZFS_VDEV_ERROR_THRESHOLD}'
+                  name: 'Device "{#DEV_NAME}" has too many checksum errors ({ITEM.LASTVALUE})'
+                  priority: AVERAGE
+            - uuid: adf3dedb9093431c9cad5ce017ccab32
+              name: 'Device "{#DEV_NAME}" - Errors - Read'
+              type: DEPENDENT
+              key: 'zfs.device.errors.read["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].errors.read'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+              trigger_prototypes:
+                - uuid: a89ec81f74af4298a13dd85196c8417c
+                  expression: 'last(/Template_ZFS/zfs.device.errors.read["{#DEV_NAME}"])>{$ZFS_VDEV_ERROR_THRESHOLD}'
+                  name: 'Device "{#DEV_NAME}" has too many read errors ({ITEM.LASTVALUE})'
+                  priority: AVERAGE
+            - uuid: 80e7ec2a23a74b669e866cd8f1aa3ad3
+              name: 'Device "{#DEV_NAME}" - Errors - Write'
+              type: DEPENDENT
+              key: 'zfs.device.errors.write["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].errors.write'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+              trigger_prototypes:
+                - uuid: 2452e577f3344550bb00adce937629d3
+                  expression: 'last(/Template_ZFS/zfs.device.errors.write["{#DEV_NAME}"])>{$ZFS_VDEV_ERROR_THRESHOLD}'
+                  name: 'Device "{#DEV_NAME}" has too many write errors ({ITEM.LASTVALUE})'
+                  priority: AVERAGE
+            - uuid: 220883e159c0424798d10e043d5f45fa
+              name: 'Device "{#DEV_NAME}" - Fragmentation'
+              type: DEPENDENT
+              key: 'zfs.device.frag["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].frag'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+            - uuid: 58746482ebc6440e85b6d2c274d611c9
+              name: 'Device "{#DEV_NAME}" - Free'
+              type: DEPENDENT
+              key: 'zfs.device.free["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].free'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+            - uuid: c056c5e5b0034145ad9b8b7f4a56d7b5
+              name: 'Device "{#DEV_NAME}" - Online'
+              type: DEPENDENT
+              key: 'zfs.device.online["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              valuemap:
+                name: YesNo
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].online'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+              trigger_prototypes:
+                - uuid: 6ca815c35207483b8cd1928cfc30fb04
+                  expression: 'last(/Template_ZFS/zfs.device.online["{#DEV_NAME}"])<>1'
+                  name: 'Device "{#DEV_NAME}" is not ONLINE'
+                  priority: HIGH
+            - uuid: b6c4bf2453974279950e178417f12258
+              name: 'Device "{#DEV_NAME}" - Size'
+              type: DEPENDENT
+              key: 'zfs.device.size["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].size'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+            - uuid: f2d03e08dc4c4ed48e195052cbd88451
+              name: 'Device "{#DEV_NAME}" - Usage'
+              type: DEPENDENT
+              key: 'zfs.device.usage["{#DEV_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.vdevs[''{#DEV_NAME}''].usage'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Devices'
+          master_item:
+            key: zfs
+          lld_macro_paths:
+            - lld_macro: '{#DEV_NAME}'
+              path: $.name
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.vdevs.*'
+        - uuid: fdb3de2e5f99474ba25aea990475a3a9
+          name: 'Pool discovery'
+          type: DEPENDENT
+          key: zfs.discovery.pool
+          delay: '0'
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#POOL_NAME}'
+                value: '{$ZFS_POOL_INCLUDE}'
+                formulaid: A
+              - macro: '{#POOL_NAME}'
+                value: '{$ZFS_POOL_EXCLUDE}'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
+          lifetime: 7d
+          item_prototypes:
+            - uuid: 0f1f7443c9c74de2a56710e2b4c792fb
+              name: 'Pool "{#POOL_NAME}" - Allocated'
+              type: DEPENDENT
+              key: 'zfs.pool.alloc["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].alloc'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+            - uuid: 3c77c0ba2a274d0ca6acbcabf4e10e9b
+              name: 'Pool "{#POOL_NAME}" - Deduplication Ratio'
+              type: DEPENDENT
+              key: 'zfs.pool.dedup["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              value_type: FLOAT
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].dedup'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+            - uuid: 9f49bfc9b79d4b4ab49bd050e360152b
+              name: 'Pool "{#POOL_NAME}" - Fragmentation'
+              type: DEPENDENT
+              key: 'zfs.pool.frag["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].frag'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+              trigger_prototypes:
+                - uuid: bb55063b2c204fd5bd5b5d171ecf2373
+                  expression: 'min(/Template_ZFS/zfs.pool.frag["{#POOL_NAME}"],600s)>{$ZFS_POOL_FRAG_HIGH}'
+                  name: 'Pool "{#POOL_NAME}" is too fragmented ({ITEM.LASTVALUE})'
+                  priority: WARNING
+            - uuid: 35578692aa5d42f2a6618bcf158e1f4d
+              name: 'Pool "{#POOL_NAME}" - Free'
+              type: DEPENDENT
+              key: 'zfs.pool.free["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].free'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+            - uuid: 6661b85f3526474da4ca9fff1d880f14
+              name: 'Pool "{#POOL_NAME}" - Online'
+              type: DEPENDENT
+              key: 'zfs.pool.online["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              valuemap:
+                name: YesNo
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].online'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+              trigger_prototypes:
+                - uuid: ef4fa5d712fa47178b511e96e5d7b5ec
+                  expression: 'last(/Template_ZFS/zfs.pool.online["{#POOL_NAME}"])<>1'
+                  name: 'Pool "{#POOL_NAME}" is not ONLINE'
+                  priority: DISASTER
+            - uuid: 8142e0e24e5241438796184ce62092d7
+              name: 'Pool "{#POOL_NAME}" - Scrub'
+              type: DEPENDENT
+              key: 'zfs.pool.scrub["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              valuemap:
+                name: YesNo
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].scrub'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+              trigger_prototypes:
+                - uuid: ab603a39c345483494609cf91b6cc722
+                  expression: 'min(/Template_ZFS/zfs.pool.scrub["{#POOL_NAME}"],600s)>0'
+                  name: 'Pool "{#POOL_NAME}" is being scrubbed'
+                  priority: INFO
+            - uuid: 5f58a3d2260844d4a7700b34b15227d2
+              name: 'Pool "{#POOL_NAME}" - Size'
+              type: DEPENDENT
+              key: 'zfs.pool.size["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].size'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+            - uuid: bcfd94172c4a487d8b6babb48c8fc0b6
+              name: 'Pool "{#POOL_NAME}" - Usage'
+              type: DEPENDENT
+              key: 'zfs.pool.usage["{#POOL_NAME}"]'
+              delay: '0'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.pools[''{#POOL_NAME}''].usage'
+              master_item:
+                key: zfs
+              tags:
+                - tag: Application
+                  value: 'ZFS - Pool "{#POOL_NAME}"'
+              trigger_prototypes:
+                - uuid: 563de1a835d1410fb79a86cb385f0af0
+                  expression: 'min(/Template_ZFS/zfs.pool.usage["{#POOL_NAME}"],600s)>={$ZFS_POOL_USAGE_CRIT}'
+                  name: 'Pool "{#POOL_NAME}" usage is critical({ITEM.LASTVALUE})'
+                  priority: HIGH
+                - uuid: e455f2b2b4274669a1c2c725d6655546
+                  expression: 'min(/Template_ZFS/zfs.pool.usage["{#POOL_NAME}"],600s)>={$ZFS_POOL_USAGE_HIGH}'
+                  name: 'Pool "{#POOL_NAME}" usage is high ({ITEM.LASTVALUE})'
+                  priority: AVERAGE
+          master_item:
+            key: zfs
+          lld_macro_paths:
+            - lld_macro: '{#POOL_NAME}'
+              path: $.name
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.pools.*'
+      macros:
+        - macro: '{$ZFS_DS_EXCLUDE}'
+          value: ^FOOBARBAZ$
+          description: 'Regexp to exclude the datasets during discovery'
+        - macro: '{$ZFS_DS_INCLUDE}'
+          value: '.*'
+          description: 'Regexp to include the datasets during discovery'
+        - macro: '{$ZFS_DS_USAGE_CRIT}'
+          value: '95'
+          description: 'Dataset usage in % when crit alert is triggered'
+        - macro: '{$ZFS_DS_USAGE_HIGH}'
+          value: '85'
+          description: 'Dataset usage in % when high alert is triggered'
+        - macro: '{$ZFS_POOL_EXCLUDE}'
+          value: ^FOOBARBAZ$
+          description: 'Regexp to exclude the pools during discovery'
+        - macro: '{$ZFS_POOL_FRAG_HIGH}'
+          value: '40'
+          description: 'Pool fragmentation in % when high alert is triggered'
+        - macro: '{$ZFS_POOL_INCLUDE}'
+          value: '.*'
+          description: 'Regexp to include the pools during discovery'
+        - macro: '{$ZFS_POOL_USAGE_CRIT}'
+          value: '95'
+          description: 'Pool usage in % when crit alert is triggered'
+        - macro: '{$ZFS_POOL_USAGE_HIGH}'
+          value: '85'
+          description: 'Pool usage in % when high alert is triggered'
+        - macro: '{$ZFS_VDEV_ERROR_THRESHOLD}'
+          value: '0'
+          description: 'vdev and L2ARC error threshold when triggers fire'
+        - macro: '{$ZFS_VDEV_EXCLUDE}'
+          value: ^FOOBARBAZ$
+          description: 'Regexp to exclude the vdevs during discovery'
+        - macro: '{$ZFS_VDEV_INCLUDE}'
+          value: '.*'
+          description: 'Regexp to include the vdevs during discovery'
+      valuemaps:
+        - uuid: 1af08d7ba6494ac0ad7960fc037f3bd1
+          name: YesNo
+          mappings:
+            - value: '0'
+              newvalue: 'No'
+            - value: '1'
+              newvalue: 'Yes'
