@@ -170,7 +170,6 @@ def arc_stats():
             'hitrate': r['hits'] / l1 * 100 if l1 else 0,
             'free': r['memory_available_bytes'],
             'meta_used': r['arc_meta_used'],
-            'meta_limit': r['arc_meta_limit'],
         },
 
         'l2': {
