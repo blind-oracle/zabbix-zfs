@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import re
 import json
-import os
 from subprocess import check_output, DEVNULL
 
 # Constants
@@ -23,10 +22,6 @@ def safe_float(value, default=0.0):
         return float(value)
     except ValueError:
         return default
-
-def device_exists(path):
-    # Checks if a device exists at the given path.
-    return os.path.exists(path)
 
 def run(cmd, split=r'\t'):
     # Runs a command and returns a list of lines, stripped and split by the given regex.
@@ -146,7 +141,7 @@ def vdev_list(errors):
         'usage': safe_int(x[7]),
         'online': state2int(x[9]),
         'errors': errors.get(x[0], {'read': 0, 'write': 0, 'cksum': 0}),
-    } for x in r if x[0].startswith('/') and device_exists(x[0])}
+    } for x in r if x[0].startswith('/')}
 
 def zfs_list():
     # Returns a list of ZFS datasets with their stats.
@@ -205,7 +200,6 @@ try:
         'arc': arc_stats(),
         'slab': slab_usage(),
     }
-
     print(json.dumps(result, indent=2))
 except Exception as e:
     print(json.dumps({"error": str(e)}))
